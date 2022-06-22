@@ -16,7 +16,7 @@
 #import "ComposeViewController.h"
 
 @interface TimelineViewController () <ComposeViewControllerDelegate, UITableViewDataSource, UITableViewDelegate>
-@property (weak, nonatomic) IBOutlet UITableView *tableView;
+
 @property (strong, nonatomic) UIRefreshControl*refreshControl;
 @property (nonatomic, strong) NSMutableArray *arrayOfTweets;
 @end
@@ -73,18 +73,26 @@
     // Dispose of any resources that can be recreated.
 }
 
+//- (void)refreshData {
+//
+//}
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     TweetCell *cell = [tableView dequeueReusableCellWithIdentifier:@"tweetCell" forIndexPath:indexPath];
     Tweet *tweet = self.arrayOfTweets[indexPath.row];
-    cell.screenName.text = tweet.user.name;
-    cell.acctName.text = tweet.user.screenName;
-    cell.tweetDate.text = tweet.createdAtString;
-    cell.tweetContent.text = tweet.text;
-    
-    NSString *URLString = tweet.user.profilePicture;
-    NSURL *url = [NSURL URLWithString:URLString];
-    //NSData *urlData = [NSData dataWithContentsOfURL:url];
-    [cell.profPic setImageWithURL:url];
+//    cell.screenName.text = tweet.user.name;
+//    cell.acctName.text = tweet.user.screenName;
+//    cell.tweetDate.text = tweet.createdAtString;
+//    cell.tweetContent.text = tweet.text;
+//    cell.retweetCount.text = [NSString stringWithFormat:@"%d", tweet.retweetCount];
+//    cell.favoriteCount.text = [NSString stringWithFormat:@"%d", tweet.favoriteCount];
+//    
+//    NSString *URLString = tweet.user.profilePicture;
+//    NSURL *url = [NSURL URLWithString:URLString];
+//    //NSData *urlData = [NSData dataWithContentsOfURL:url];
+//    [cell.profPic setImageWithURL:url];
+    cell.tweet = tweet;
+    [cell setTweet];
     return cell;
 }
 
@@ -105,7 +113,5 @@
     // Get the new view controller using [segue destinationViewController].
     // Pass the selected object to the new view controller.
 }
-
-
 
 @end
