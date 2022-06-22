@@ -10,5 +10,5 @@
 
 @interface TimelineViewController : UIViewController
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
-
+- (void)unTweet;
 @end

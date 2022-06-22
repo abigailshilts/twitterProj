@@ -24,7 +24,40 @@
 
     // Configure the view for the selected state
 }
+- (IBAction)didTapRetweet:(id)sender {
+    if (self.tweet.retweeted == YES) {
+        self.tweet.retweetCount -= 1;
+        self.tweet.retweeted = NO;
+        [[APIManager shared] unretweet:self.tweet completion:^(Tweet *tweet, NSError *error) {
+            if(error){
+                 NSLog(@"Error retweeting: %@", error.localizedDescription);
+            }
+            else{
+                NSLog(@"Successfully retweeted the following Tweet: %@", tweet.text);
+            }
+        }];
+        [self setTweet];
+        [self.delegate unTweet];
+        [self setTweet];
+    } else {
+        self.tweet.retweetCount += 1;
+        self.tweet.retweeted = YES;
+        
+        [[APIManager shared] retweet:self.tweet completion:^(Tweet *tweet, NSError *error) {
+            if(error){
+                 NSLog(@"Error retweeting: %@", error.localizedDescription);
+            }
+            else{
+                NSLog(@"Successfully retweeted the following Tweet: %@", tweet.text);
+            }
+        }];
+        [self.delegate didTweet:self.tweet];
+        [self setTweet];
+    }
+    
+}
 - (IBAction)didTapFavorite:(id)sender {
+    //fix so not need
     if (self.tweet.favorited){
         self.isFavorite = 1;
     }
@@ -45,8 +78,7 @@
                 NSLog(@"Successfully favorited the following Tweet: %@", tweet.text);
             }
         }];
-    }
-    else{
+    } else {
         self.isFavorite = 1;
         self.tweet.favoriteCount += 1;
         self.tweet.favorited = YES;
@@ -89,6 +121,15 @@
     else {
         UIImage *btnImage = [UIImage imageNamed:@"favor-icon"];
         [self.favBut setImage:btnImage forState:UIControlStateNormal];
+    }
+    
+    if (self.tweet.retweeted == YES) {
+        UIImage *btnImage = [UIImage imageNamed:@"retweet-icon-green"];
+        [self.retweetBut setImage:btnImage forState:UIControlStateNormal];
+    }
+    else {
+        UIImage *btnImage = [UIImage imageNamed:@"retweet-icon"];
+        [self.retweetBut setImage:btnImage forState:UIControlStateNormal];
     }
 }
 //

@@ -15,7 +15,7 @@
 #import "UIImageView+AFNetworking.h"
 #import "ComposeViewController.h"
 
-@interface TimelineViewController () <ComposeViewControllerDelegate, UITableViewDataSource, UITableViewDelegate>
+@interface TimelineViewController () <TweetCellDelegate, ComposeViewControllerDelegate, UITableViewDataSource, UITableViewDelegate>
 
 @property (strong, nonatomic) UIRefreshControl*refreshControl;
 @property (nonatomic, strong) NSMutableArray *arrayOfTweets;
@@ -60,6 +60,11 @@
     [self.tableView reloadData];
 }
 
+- (void)unTweet {
+    [self.arrayOfTweets removeObjectAtIndex:0];
+    [self.tableView reloadData];
+}
+
 - (IBAction)logoutAct:(id)sender {
     AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
@@ -79,6 +84,7 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     TweetCell *cell = [tableView dequeueReusableCellWithIdentifier:@"tweetCell" forIndexPath:indexPath];
+    cell.delegate = self;
     Tweet *tweet = self.arrayOfTweets[indexPath.row];
 //    cell.screenName.text = tweet.user.name;
 //    cell.acctName.text = tweet.user.screenName;
@@ -93,6 +99,8 @@
 //    [cell.profPic setImageWithURL:url];
     cell.tweet = tweet;
     [cell setTweet];
+    
+    
     return cell;
 }
 

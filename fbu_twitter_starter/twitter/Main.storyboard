@@ -199,6 +199,9 @@
                                                     <rect key="frame" x="83" y="250" width="54" height="41"/>
                                                     <state key="normal" title="Button"/>
                                                     <buttonConfiguration key="configuration" style="plain" image="retweet-icon" title=""/>
+                                                    <connections>
+                                                        <action selector="didTapRetweet:" destination="EmC-rh-uQR" eventType="touchUpInside" id="EoC-Oa-IET"/>
+                                                    </connections>
                                                 </button>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Utn-6g-ezn">
                                                     <rect key="frame" x="122" y="260" width="36" height="21"/>
@@ -247,6 +250,7 @@
                                             <outlet property="favBut" destination="5kZ-FV-MKP" id="mrk-XN-omS"/>
                                             <outlet property="favoriteCount" destination="Ev9-co-TrO" id="PLA-UD-DTW"/>
                                             <outlet property="profPic" destination="QTQ-tf-OBD" id="3zr-SZ-KsA"/>
+                                            <outlet property="retweetBut" destination="lbq-Nh-BrU" id="iHt-L2-8u2"/>
                                             <outlet property="retweetCount" destination="Utn-6g-ezn" id="X6s-Jf-QR2"/>
                                             <outlet property="screenName" destination="ubU-dY-eAU" id="rJz-NB-5rg"/>
                                             <outlet property="tweetContent" destination="j6y-K4-hFv" id="BJc-Sj-xEm"/>
