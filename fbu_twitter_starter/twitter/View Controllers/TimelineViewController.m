@@ -14,8 +14,10 @@
 #import "TweetCell.h"
 #import "UIImageView+AFNetworking.h"
 #import "ComposeViewController.h"
+#import "DetailsViewController.h"
 
-@interface TimelineViewController () <TweetCellDelegate, ComposeViewControllerDelegate, UITableViewDataSource, UITableViewDelegate>
+//delete detailsveiwcontrollerdelegatestuff
+@interface TimelineViewController () <DetailsViewControllerDelegate, TweetCellDelegate, ComposeViewControllerDelegate, UITableViewDataSource, UITableViewDelegate>
 
 @property (strong, nonatomic) UIRefreshControl*refreshControl;
 @property (nonatomic, strong) NSMutableArray *arrayOfTweets;
@@ -27,6 +29,7 @@
     [super viewDidLoad];
     self.tableView.dataSource = self;
     self.tableView.delegate = self;
+
 
     self.tableView.rowHeight = UITableViewAutomaticDimension;
     [self loadTweets];
@@ -108,18 +111,26 @@
     return self.arrayOfTweets.count;
 }
 
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    DetailsViewController *dViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"DetailsViewController"];
+    dViewController.delegate = self;
+    Tweet *tweet = self.arrayOfTweets[indexPath.row];
+    dViewController.tweet = tweet;
+    [self.navigationController pushViewController: dViewController animated:YES];
+}
+
 
 #pragma mark - Navigation
 
  //In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-
-    UINavigationController *navigationController = [segue destinationViewController];
-       ComposeViewController *composeController = (ComposeViewController*)navigationController.topViewController;
-       composeController.delegate = self;
-
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
+//- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+//
+//    UINavigationController *navigationController = [segue destinationViewController];
+//       ComposeViewController *composeController = (ComposeViewController*)navigationController.topViewController;
+//       composeController.delegate = self;
+//
+//    // Get the new view controller using [segue destinationViewController].
+//    // Pass the selected object to the new view controller.
+//}
 
 @end

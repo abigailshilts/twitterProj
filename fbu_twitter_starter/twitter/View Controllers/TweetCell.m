@@ -12,6 +12,7 @@
 #import "UIImageView+AFNetworking.h"
 #import "APIManager.h"
 
+
 @implementation TweetCell
 
 - (void)awakeFromNib {
@@ -104,7 +105,7 @@
         self.isFavorite = 0;
     }
     self.screenName.text = self.tweet.user.name;
-    self.acctName.text = self.tweet.user.screenName;
+    self.acctName.text = [@"@" stringByAppendingString:self.tweet.user.screenName];
     self.tweetDate.text = self.tweet.createdAtString;
     self.tweetContent.text = self.tweet.text;
     self.retweetCount.text = [NSString stringWithFormat:@"%d", self.tweet.retweetCount];
