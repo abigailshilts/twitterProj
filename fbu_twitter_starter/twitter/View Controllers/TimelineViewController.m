@@ -20,7 +20,7 @@
 @interface TimelineViewController () <DetailsViewControllerDelegate, TweetCellDelegate, ComposeViewControllerDelegate, UITableViewDataSource, UITableViewDelegate>
 
 @property (strong, nonatomic) UIRefreshControl*refreshControl;
-@property (nonatomic, strong) NSMutableArray *arrayOfTweets;
+@property (nonatomic, strong) NSMutableArray<Tweet *> *arrayOfTweets;
 @end
 
 @implementation TimelineViewController
@@ -41,10 +41,16 @@
 
 -(void) loadTweets {
     // Get timeline
-    [[APIManager shared] getHomeTimelineWithCompletion:^(NSArray *tweets, NSError *error) {
+    NSString *idNum = self.arrayOfTweets[self.arrayOfTweets.count-1].idStr;
+    
+    [[APIManager shared] getHomeTimelineWithCompletion:idNum completion:^(NSArray *tweets, NSError *error) {
         if (tweets) {
             NSLog(@"😎😎😎 Successfully loaded home timeline");
-            self.arrayOfTweets = tweets;
+            if (self.arrayOfTweets == nil){
+                self.arrayOfTweets = tweets;
+            } else {
+                self.arrayOfTweets = [self.arrayOfTweets arrayByAddingObjectsFromArray:tweets];
+            }
             for (Tweet *tweet in tweets) {
                 NSString *text = tweet.text;
                 NSLog(@"%@", text);
@@ -132,5 +138,11 @@
 //    // Get the new view controller using [segue destinationViewController].
 //    // Pass the selected object to the new view controller.
 //}
+
+- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (indexPath.row == (self.arrayOfTweets.count - 2)){
+        [self loadTweets];
+    }
+}
 
 @end
