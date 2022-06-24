@@ -6,40 +6,39 @@
 //  Copyright © 2022 Emerson Malca. All rights reserved.
 //
 
+#import "DateTools.h"
+#import "stringsList.h"
 #import "Tweet.h"
 #import "User.h"
-#import "DateTools.h"
 
 @implementation Tweet
 - (instancetype)initWithDictionary:(NSDictionary *)dictionary {
     self = [super init];
 
     if (self) {
-        // Is this a re-tweet?
-        NSDictionary *originalTweet = dictionary[@"retweeted_status"];
+        NSDictionary *originalTweet = dictionary[retweetStatus];
         if (originalTweet != nil) {
-            NSDictionary *userDictionary = dictionary[@"user"];
+            NSDictionary *userDictionary = dictionary[userStr];
             self.retweetedByUser = [[User alloc] initWithDictionary:userDictionary];
 
             // Change tweet to original tweet
             dictionary = originalTweet;
         }
-        self.idStr = dictionary[@"id_str"];
-        self.text = dictionary[@"text"];
-        self.favoriteCount = [dictionary[@"favorite_count"] intValue];
-        self.favorited = [dictionary[@"favorited"] boolValue];
-        self.retweetCount = [dictionary[@"retweet_count"] intValue];
-        self.retweeted = [dictionary[@"retweeted"] boolValue];
+        self.idStr = dictionary[id_Str];
+        self.text = dictionary[textStr];
+        self.favoriteCount = [dictionary[favCount] intValue];
+        self.favorited = [dictionary[isFav] boolValue];
+        self.retweetCount = [dictionary[retweetCount] intValue];
+        self.retweeted = [dictionary[hasRetweet] boolValue];
 
-        // TODO: initialize user
         // initialize user
-        NSDictionary *user = dictionary[@"user"];
+        NSDictionary *user = dictionary[userStr];
         self.user = [[User alloc] initWithDictionary:user];        
         // Format createdAt date string
-        NSString *createdAtOriginalString = dictionary[@"created_at"];
+        NSString *createdAtOriginalString = dictionary[whenCreated];
         NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
         // Configure the input format to parse the date string
-        formatter.dateFormat = @"E MMM d HH:mm:ss Z y";
+        formatter.dateFormat = formatOfDate;
         // Convert String to Date
         NSDate *date = [formatter dateFromString:createdAtOriginalString];
         self.createdAtString = [date shortTimeAgoSinceNow];

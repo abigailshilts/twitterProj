@@ -5,7 +5,7 @@
 //  Created by Abigail Shilts on 6/20/22.
 //  Copyright © 2022 Emerson Malca. All rights reserved.
 //
-
+#import "stringsList.h"
 #import "User.h"
 
 @implementation User
@@ -14,10 +14,9 @@
     self = [super init];
 
     if (self) {
-        self.name = dictionary[@"name"];
-        self.screenName = dictionary[@"screen_name"];
-        self.profilePicture = dictionary[@"profile_image_url_https"];
-    // Initialize any other properties
+        self.name = dictionary[nameStr];
+        self.screenName = dictionary[screenNameStr];
+        self.profilePicture = dictionary[profileImgUrl];
     }
     return self;
 }

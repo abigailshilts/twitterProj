@@ -30,7 +30,6 @@ NS_ASSUME_NONNULL_BEGIN
 @property (weak, nonatomic) IBOutlet UILabel *favoriteCount;
 @property (nonatomic, weak) id<TweetCellDelegate> delegate;
 @property (nonatomic, strong) Tweet *tweet;
-@property int isFavorite;
 - (void)setTweet;
 
 @end

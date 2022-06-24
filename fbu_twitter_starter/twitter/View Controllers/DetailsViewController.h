@@ -18,8 +18,10 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 @interface DetailsViewController : UIViewController
+
 @property Tweet *tweet;
 @property (nonatomic, weak) id<DetailsViewControllerDelegate> delegate;
+
 @end
 
 NS_ASSUME_NONNULL_END
