@@ -26,6 +26,8 @@ The following **stretch** features are implemented:
 **A user could**
 
 - [✅] Be able to **unlike** or **un-retweet** by tapping a liked or retweeted Tweet button, respectively. (Doing so will decrement the count for each)
+- [✅] See a character count when composing a Tweet (as well as a warning) (280 characters) (**1 point**)
+- [✅] Load more tweets once they reach the bottom of the feed using infinite loading similar to the actual Twitter client
 
 The following **additional** features are implemented:
 
@@ -45,6 +47,7 @@ Here's a walkthrough of implemented user stories:
 ![twitterVidP3](https://user-images.githubusercontent.com/58635711/175429734-e84a82a1-eae1-417f-b866-360aa8b47605.gif)
 ![twitterVidP4](https://user-images.githubusercontent.com/58635711/175429924-19ac66e6-087e-4514-9a88-6cdb03433556.gif)
 ![twitterVidp5](https://user-images.githubusercontent.com/58635711/175429983-629f1751-5bce-4899-8ea5-34e7a3273623.gif)
+![twitterVidP6)](https://user-images.githubusercontent.com/58635711/175719135-aef92069-fbb2-4568-a27a-a90e29aed42f.gif)
 
 GIF in parts to meet GitHub size requirement, if there is an issue with any part or to see full version see recordingP2Twitter.mov in the main branch of the repo
 
