@@ -36,13 +36,12 @@
         [[APIManager shared] unretweet:self.tweet completion:^(Tweet *tweet, NSError *error) {
             if(error){
                  NSLog(unretweetError, error.localizedDescription);
-            }
-            else{
+            } else {
                 NSLog(unretweetSuccess, tweet.text);
             }
         }];
         [self setTweet];
-        [self.delegate unTweet];
+        [self.delegate unTweet:self.tweet.idStr];
         [self setTweet];
     }
     // for if the tweet wasn't already retweeted, increment retweet count, update API, update cellm retweet the tweet
@@ -53,11 +52,11 @@
         [[APIManager shared] retweet:self.tweet completion:^(Tweet *tweet, NSError *error) {
             if(error){
                  NSLog(retweetError, error.localizedDescription);
-            }
-            else{
+            } else {
                 NSLog(retweetSuccess, tweet.text);
             }
         }];
+        
         [self.delegate didTweet:self.tweet];
         [self setTweet];
     }
@@ -75,8 +74,7 @@
         [[APIManager shared] unFavorite:self.tweet completion:^(Tweet *tweet, NSError *error) {
             if(error){
                  NSLog(unfavoriteError, error.localizedDescription);
-            }
-            else{
+            } else {
                 NSLog(unfavoriteSuccess, tweet.text);
             }
         }];
@@ -89,8 +87,7 @@
         [[APIManager shared] favorite:self.tweet completion:^(Tweet *tweet, NSError *error) {
             if(error){
                  NSLog(favoriteError, error.localizedDescription);
-            }
-            else{
+            } else {
                 NSLog(favoriteSuccess, tweet.text);
             }
         }];
@@ -115,8 +112,7 @@
     if (self.tweet.favorited == YES) {
         UIImage *btnImage = [UIImage imageNamed:iconFavorited];
         [self.favBut setImage:btnImage forState:UIControlStateNormal];
-    }
-    else {
+    } else {
         UIImage *btnImage = [UIImage imageNamed:iconNotFavorited];
         [self.favBut setImage:btnImage forState:UIControlStateNormal];
     }
@@ -124,8 +120,7 @@
     if (self.tweet.retweeted == YES) {
         UIImage *btnImage = [UIImage imageNamed:iconRetweeted];
         [self.retweetBut setImage:btnImage forState:UIControlStateNormal];
-    }
-    else {
+    } else {
         UIImage *btnImage = [UIImage imageNamed:iconNotRetweeted];
         [self.retweetBut setImage:btnImage forState:UIControlStateNormal];
     }

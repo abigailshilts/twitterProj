@@ -13,8 +13,10 @@
 #import "TweetCell.h"
 #import "UIImageView+AFNetworking.h"
 
-//delete detailsveiwcontrollerdelegate is apart of an attempt to get retweet/unretweet functions to work from details view, will come back to if there is time
-@interface TimelineViewController () <DetailsViewControllerDelegate, TweetCellDelegate, ComposeViewControllerDelegate, UITableViewDataSource, UITableViewDelegate>
+//delete detailsveiwcontrollerdelegate is apart of an attempt to get retweet/unretweet functions to work from details
+//view, will come back to if there is time
+@interface TimelineViewController () <DetailsViewControllerDelegate, TweetCellDelegate, ComposeViewControllerDelegate,
+    UITableViewDataSource, UITableViewDelegate>
 
 @property (strong, nonatomic) UIRefreshControl*refreshControl;
 @property (nonatomic, strong) NSMutableArray<Tweet *> *arrayOfTweets;
@@ -69,10 +71,21 @@
 }
 
 // removes new user generated tweet to the timeline
-// bug where if most recent tweet is not the one that was retweeted it removes the wrong tweet from feed
-// better way could be using idStr?
-- (void)unTweet {
-    [self.arrayOfTweets removeObjectAtIndex:0];
+// since new tweet not added to api, if reload and try to unretweet just deletes original tweet ->
+// couldn't find API command to publish a tweet with a different auth than current user so instead
+// checks if a there is a second version of the tweet in local feed before deleting
+- (void)unTweet:(NSString *)toFind {
+    int i;
+    int firstIndex = -1;
+    for (i = 0; i < self.arrayOfTweets.count; i++){
+        if (self.arrayOfTweets[i].idStr == toFind){
+            if (firstIndex < 0){
+                firstIndex = i;
+            } else{
+                [self.arrayOfTweets removeObjectAtIndex:firstIndex];
+            }
+        }
+    }
     [self.tableView reloadData];
 }
 
@@ -80,7 +93,8 @@
 - (IBAction)logoutAct:(id)sender {
     AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:main bundle:nil];
-    LoginViewController *loginViewController = [storyboard instantiateViewControllerWithIdentifier:loginViewControllerStr];
+    LoginViewController *loginViewController =
+        [storyboard instantiateViewControllerWithIdentifier:loginViewControllerStr];
     appDelegate.window.rootViewController = loginViewController;
     [[APIManager shared] logout];
 }
@@ -109,18 +123,22 @@
 
 // Causes detailsView page to pop up when tweet is selected
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    DetailsViewController *dViewController = [self.storyboard instantiateViewControllerWithIdentifier:detailsViewControllerStr];
+    DetailsViewController *dViewController =
+        [self.storyboard instantiateViewControllerWithIdentifier:detailsViewControllerStr];
     dViewController.delegate = self;
     Tweet *tweet = self.arrayOfTweets[indexPath.row];
     dViewController.tweet = tweet;
     [self.navigationController pushViewController: dViewController animated:YES];
+    if (tweet.retweeted == YES){
+    }
 }
 
 
 #pragma mark - Navigation
 
 // keeps track of next cell to be displayed so that table can be expanded when scrolling -> infinite scroll
-- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
+- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell
+    forRowAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.row == (self.arrayOfTweets.count - 2)){
         [self loadTweets];
     }

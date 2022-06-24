@@ -14,7 +14,7 @@ NS_ASSUME_NONNULL_BEGIN
 @protocol TweetCellDelegate
 
 - (void)didTweet:(Tweet *)tweet;
-- (void)unTweet;
+- (void)unTweet:(NSString *)toFind;
 
 @end
 

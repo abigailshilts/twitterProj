@@ -52,7 +52,8 @@ static NSString * const baseURLString = apiLinkBase;
 }
 
 // Loads in tweets from API GET
-- (void)getHomeTimelineWithCompletion:(NSString *)idNum completion:(void(^)(NSArray *tweets, NSError *error))completion {
+- (void)getHomeTimelineWithCompletion:(NSString *)idNum completion:
+        (void(^)(NSArray *tweets, NSError *error))completion {
     NSDictionary *parameters;
     if (idNum == nil) {
         parameters = nil;
@@ -61,7 +62,8 @@ static NSString * const baseURLString = apiLinkBase;
         parameters = @{maxId: idNum};
     }
     [self GET:homeTimeLineJson
-       parameters:parameters progress:nil success:^(NSURLSessionDataTask * _Nonnull task, NSArray *  _Nullable tweetDictionaries) {
+       parameters:parameters progress:nil success:
+            ^(NSURLSessionDataTask * _Nonnull task, NSArray *  _Nullable tweetDictionaries) {
            // Success
            NSMutableArray *tweets = [Tweet tweetsWithArray:tweetDictionaries];
            completion(tweets, nil);
@@ -75,7 +77,8 @@ static NSString * const baseURLString = apiLinkBase;
 - (void)postStatusWithText:(NSString *)text completion:(void (^)(Tweet *, NSError *))completion {
     NSString *urlString = statusesUpdateJson;
     NSDictionary *parameters = @{status: text};
-    [self POST:urlString parameters:parameters progress:nil success:^(NSURLSessionDataTask * _Nonnull task, NSDictionary *  _Nullable tweetDictionary) {
+    [self POST:urlString parameters:parameters progress:nil
+            success:^(NSURLSessionDataTask * _Nonnull task, NSDictionary *  _Nullable tweetDictionary) {
         Tweet *tweet = [[Tweet alloc]initWithDictionary:tweetDictionary];
         completion(tweet, nil);
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
@@ -88,7 +91,8 @@ static NSString * const baseURLString = apiLinkBase;
 
     NSString *urlString = favoritesCreateJson;
     NSDictionary *parameters = @{idStr: tweet.idStr};
-    [self POST:urlString parameters:parameters progress:nil success:^(NSURLSessionDataTask * _Nonnull task, NSDictionary *  _Nullable tweetDictionary) {
+    [self POST:urlString parameters:parameters progress:nil
+        success:^(NSURLSessionDataTask * _Nonnull task, NSDictionary *  _Nullable tweetDictionary) {
         Tweet *tweet = [[Tweet alloc]initWithDictionary:tweetDictionary];
         completion(tweet, nil);
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
@@ -103,7 +107,8 @@ static NSString * const baseURLString = apiLinkBase;
     NSString *urlString = [urlStringBegin stringByAppendingString:tweet.idStr];
     urlString = [urlString stringByAppendingString:end];
     NSDictionary *parameters = @{idStr: tweet.idStr};
-    [self POST:urlString parameters:parameters progress:nil success:^(NSURLSessionDataTask * _Nonnull task, NSDictionary *  _Nullable tweetDictionary) {
+    [self POST:urlString parameters:parameters progress:nil
+        success:^(NSURLSessionDataTask * _Nonnull task, NSDictionary *  _Nullable tweetDictionary) {
         Tweet *tweet = [[Tweet alloc]initWithDictionary:tweetDictionary];
         completion(tweet, nil);
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
@@ -119,7 +124,8 @@ static NSString * const baseURLString = apiLinkBase;
     NSString *urlString = [urlStringBegin stringByAppendingString:tweet.idStr];
     urlString = [urlString stringByAppendingString:end];
     NSDictionary *parameters = @{idStr: tweet.idStr};
-    [self POST:urlString parameters:parameters progress:nil success:^(NSURLSessionDataTask * _Nonnull task, NSDictionary *  _Nullable tweetDictionary) {
+    [self POST:urlString parameters:parameters progress:nil
+        success:^(NSURLSessionDataTask * _Nonnull task, NSDictionary *  _Nullable tweetDictionary) {
         Tweet *tweet = [[Tweet alloc]initWithDictionary:tweetDictionary];
         completion(tweet, nil);
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
@@ -132,7 +138,8 @@ static NSString * const baseURLString = apiLinkBase;
 
     NSString *urlString = favoritesDestroyJson;
     NSDictionary *parameters = @{idStr: tweet.idStr};
-    [self POST:urlString parameters:parameters progress:nil success:^(NSURLSessionDataTask * _Nonnull task, NSDictionary *  _Nullable tweetDictionary) {
+    [self POST:urlString parameters:parameters progress:nil
+        success:^(NSURLSessionDataTask * _Nonnull task, NSDictionary *  _Nullable tweetDictionary) {
         Tweet *tweet = [[Tweet alloc]initWithDictionary:tweetDictionary];
         completion(tweet, nil);
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {

@@ -40,6 +40,7 @@ static const NSString *const loginViewControllerStr = @"LoginViewController";
 static const NSString *const main = @"Main";
 static const NSString *const maxId = @"max_id";
 static const NSString *const nameStr = @"name";
+static const NSString *const twoEighty = @"280";
 static const NSString *const plist = @"plist";
 static const NSString *const profileImgUrl = @"profile_image_url_https";
 static const NSString *const retweetCount = @"retweet_count";

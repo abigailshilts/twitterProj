@@ -35,7 +35,8 @@
     self.tweetContents.text = self.tweet.text;
     self.tweetDate.text = self.tweet.createdAtString;
     NSString *likeCount = likes;
-    self.likeCount.text = [[NSString stringWithFormat:intToStringFormat, self.tweet.favoriteCount] stringByAppendingString:likeCount];
+    self.likeCount.text = [[NSString stringWithFormat:intToStringFormat, self.tweet.favoriteCount]
+        stringByAppendingString:likeCount];
     NSString *URLString = self.tweet.user.profilePicture;
     NSURL *url = [NSURL URLWithString:URLString];
     [self.profPic setImageWithURL:url];
@@ -76,7 +77,8 @@
         [self.favoriteBut setImage:btnImage forState:UIControlStateNormal];
     }
     NSString *likeCount = likes;
-    self.likeCount.text = [[NSString stringWithFormat:intToStringFormat, self.tweet.favoriteCount] stringByAppendingString:likeCount];
+    self.likeCount.text = [[NSString stringWithFormat:intToStringFormat, self.tweet.favoriteCount]
+        stringByAppendingString:likeCount];
 }
 
 // attempt to update retweet aspect similarily to didTapFavorite in TweetCell
@@ -88,8 +90,7 @@
         [[APIManager shared] unretweet:self.tweet completion:^(Tweet *tweet, NSError *error) {
             if(error){
                  NSLog(unretweetError, error.localizedDescription);
-            }
-            else{
+            } else {
                 NSLog(unretweetSuccess, tweet.text);
             }
         }];
@@ -104,8 +105,7 @@
         [[APIManager shared] retweet:self.tweet completion:^(Tweet *tweet, NSError *error) {
             if(error){
                  NSLog(retweetError, error.localizedDescription);
-            }
-            else{
+            } else {
                 NSLog(retweetSuccess, tweet.text);
                 [self.delegate didTweet:self.tweet];
             }
