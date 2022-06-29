@@ -7,8 +7,10 @@
 //
 
 #import "APIManager.h"
+#import "stringsList.h"
+#import "Tweet.h"
 
-static NSString * const baseURLString = @"https://api.twitter.com";
+static NSString * const baseURLString = apiLinkBase;
 
 @interface APIManager()
 
@@ -29,19 +31,17 @@ static NSString * const baseURLString = @"https://api.twitter.com";
     
     NSURL *baseURL = [NSURL URLWithString:baseURLString];
     
-    // TODO: fix code below to pull API Keys from your new Keys.plist file
-    
-    NSString *path = ;
-    NSDictionary *dict = ;
-    NSString *key = ;
-    NSString *secret = ;
+    NSString *path = [[NSBundle mainBundle] pathForResource:keys ofType:plist];
+    NSDictionary *dict = [NSDictionary dictionaryWithContentsOfFile: path];
+    NSString *key = [dict objectForKey:consumerKey];
+    NSString *secret = [dict objectForKey:consumerSecret];
     
     // Check for launch arguments override
-    if ([[NSUserDefaults standardUserDefaults] stringForKey:@"consumer-key"]) {
-        key = [[NSUserDefaults standardUserDefaults] stringForKey:@"consumer-key"];
+    if ([[NSUserDefaults standardUserDefaults] stringForKey:consumerKey]) {
+        key = [[NSUserDefaults standardUserDefaults] stringForKey:consumerKey];
     }
-    if ([[NSUserDefaults standardUserDefaults] stringForKey:@"consumer-secret"]) {
-        secret = [[NSUserDefaults standardUserDefaults] stringForKey:@"consumer-secret"];
+    if ([[NSUserDefaults standardUserDefaults] stringForKey:consumerSecret]) {
+        secret = [[NSUserDefaults standardUserDefaults] stringForKey:consumerSecret];
     }
     
     self = [super initWithBaseURL:baseURL consumerKey:key consumerSecret:secret];
@@ -51,29 +51,100 @@ static NSString * const baseURLString = @"https://api.twitter.com";
     return self;
 }
 
-- (void)getHomeTimelineWithCompletion:(void(^)(NSArray *tweets, NSError *error))completion {
-    
-    [self GET:@"1.1/statuses/home_timeline.json"
-   parameters:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, NSArray *  _Nullable tweetDictionaries) {
-       
-       // Manually cache the tweets. If the request fails, restore from cache if possible.
-       NSData *data = [NSKeyedArchiver archivedDataWithRootObject:tweetDictionaries];
-       [[NSUserDefaults standardUserDefaults] setValue:data forKey:@"hometimeline_tweets"];
+// Loads in tweets from API GET
+- (void)getHomeTimelineWithCompletion:(NSString *)idNum completion:
+        (void(^)(NSArray *tweets, NSError *error))completion {
+    NSDictionary *parameters;
+    if (idNum == nil) {
+        parameters = nil;
+    }
+    else {
+        parameters = @{maxId: idNum};
+    }
+    [self GET:homeTimeLineJson
+       parameters:parameters progress:nil success:
+            ^(NSURLSessionDataTask * _Nonnull task, NSArray *  _Nullable tweetDictionaries) {
+           // Success
+           NSMutableArray *tweets = [Tweet tweetsWithArray:tweetDictionaries];
+           completion(tweets, nil);
+       } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+           // There was a problem
+           completion(nil, error);
+    }];
+}
 
-       completion(tweetDictionaries, nil);
-       
-   } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-       
-       NSArray *tweetDictionaries = nil;
-       
-       // Fetch tweets from cache if possible
-       NSData *data = [[NSUserDefaults standardUserDefaults] valueForKey:@"hometimeline_tweets"];
-       if (data != nil) {
-           tweetDictionaries = [NSKeyedUnarchiver unarchiveObjectWithData:data];
-       }
-       
-       completion(tweetDictionaries, error);
-   }];
+// APIManager.m
+- (void)postStatusWithText:(NSString *)text completion:(void (^)(Tweet *, NSError *))completion {
+    NSString *urlString = statusesUpdateJson;
+    NSDictionary *parameters = @{status: text};
+    [self POST:urlString parameters:parameters progress:nil
+            success:^(NSURLSessionDataTask * _Nonnull task, NSDictionary *  _Nullable tweetDictionary) {
+        Tweet *tweet = [[Tweet alloc]initWithDictionary:tweetDictionary];
+        completion(tweet, nil);
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        completion(nil, error);
+    }];
+}
+
+// Adds a favorite to the API
+- (void)favorite:(Tweet *)tweet completion:(void (^)(Tweet *, NSError *))completion {
+
+    NSString *urlString = favoritesCreateJson;
+    NSDictionary *parameters = @{idStr: tweet.idStr};
+    [self POST:urlString parameters:parameters progress:nil
+        success:^(NSURLSessionDataTask * _Nonnull task, NSDictionary *  _Nullable tweetDictionary) {
+        Tweet *tweet = [[Tweet alloc]initWithDictionary:tweetDictionary];
+        completion(tweet, nil);
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        completion(nil, error);
+    }];
+}
+// adds a retweet to the API
+- (void)retweet:(Tweet *)tweet completion:(void (^)(Tweet *, NSError *))completion {
+
+    NSString *urlStringBegin = retweetJson;
+    NSString *end = json;
+    NSString *urlString = [urlStringBegin stringByAppendingString:tweet.idStr];
+    urlString = [urlString stringByAppendingString:end];
+    NSDictionary *parameters = @{idStr: tweet.idStr};
+    [self POST:urlString parameters:parameters progress:nil
+        success:^(NSURLSessionDataTask * _Nonnull task, NSDictionary *  _Nullable tweetDictionary) {
+        Tweet *tweet = [[Tweet alloc]initWithDictionary:tweetDictionary];
+        completion(tweet, nil);
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        completion(nil, error);
+    }];
+}
+
+// removes a retweet from the API
+- (void)unretweet:(Tweet *)tweet completion:(void (^)(Tweet *, NSError *))completion {
+
+    NSString *urlStringBegin = unretweetJson;
+    NSString *end = json;
+    NSString *urlString = [urlStringBegin stringByAppendingString:tweet.idStr];
+    urlString = [urlString stringByAppendingString:end];
+    NSDictionary *parameters = @{idStr: tweet.idStr};
+    [self POST:urlString parameters:parameters progress:nil
+        success:^(NSURLSessionDataTask * _Nonnull task, NSDictionary *  _Nullable tweetDictionary) {
+        Tweet *tweet = [[Tweet alloc]initWithDictionary:tweetDictionary];
+        completion(tweet, nil);
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        completion(nil, error);
+    }];
+}
+
+// removes a favorite from the API
+- (void)unFavorite:(Tweet *)tweet completion:(void (^)(Tweet *, NSError *))completion {
+
+    NSString *urlString = favoritesDestroyJson;
+    NSDictionary *parameters = @{idStr: tweet.idStr};
+    [self POST:urlString parameters:parameters progress:nil
+        success:^(NSURLSessionDataTask * _Nonnull task, NSDictionary *  _Nullable tweetDictionary) {
+        Tweet *tweet = [[Tweet alloc]initWithDictionary:tweetDictionary];
+        completion(tweet, nil);
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        completion(nil, error);
+    }];
 }
 
 @end
